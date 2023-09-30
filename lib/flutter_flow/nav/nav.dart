@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import '/backend/backend.dart';
 
+import '/backend/supabase/supabase.dart';
 import '../../auth/base_auth_user_provider.dart';
 
 import '/index.dart';
@@ -92,19 +94,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => SignInWidget(),
             ),
             FFRoute(
-              name: 'signUp',
-              path: 'signUp',
-              builder: (context, params) => SignUpWidget(),
-            ),
-            FFRoute(
               name: 'createProfile',
               path: 'createProfile',
               builder: (context, params) => CreateProfileWidget(),
             ),
             FFRoute(
-              name: 'phoneSignIn',
-              path: 'phoneSignIn',
-              builder: (context, params) => PhoneSignInWidget(),
+              name: 'signUp',
+              path: 'signUp',
+              builder: (context, params) => SignUpWidget(),
             ),
             FFRoute(
               name: 'forgotPassword',
@@ -136,6 +133,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'profilePage')
                   : ProfilePageWidget(),
+            ),
+            FFRoute(
+              name: 'editUser',
+              path: 'editUser',
+              builder: (context, params) => EditUserWidget(
+                edit: params.getParam<CustomersRow>(
+                    'edit', ParamType.SupabaseRow),
+              ),
+            ),
+            FFRoute(
+              name: 'newUser',
+              path: 'newUser',
+              builder: (context, params) => NewUserWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),
@@ -360,4 +370,24 @@ class TransitionInfo {
   final Alignment? alignment;
 
   static TransitionInfo appDefault() => TransitionInfo(hasTransition: false);
+}
+
+class RootPageContext {
+  const RootPageContext(this.isRootPage, [this.errorRoute]);
+  final bool isRootPage;
+  final String? errorRoute;
+
+  static bool isInactiveRootPage(BuildContext context) {
+    final rootPageContext = context.read<RootPageContext?>();
+    final isRootPage = rootPageContext?.isRootPage ?? false;
+    final location = GoRouter.of(context).location;
+    return isRootPage &&
+        location != '/' &&
+        location != rootPageContext?.errorRoute;
+  }
+
+  static Widget wrap(Widget child, {String? errorRoute}) => Provider.value(
+        value: RootPageContext(true, errorRoute),
+        child: child,
+      );
 }

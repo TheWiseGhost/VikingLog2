@@ -1,4 +1,3 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -26,6 +25,8 @@ class _PhoneVerifyWidgetState extends State<PhoneVerifyWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => PhoneVerifyModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -38,7 +39,9 @@ class _PhoneVerifyWidgetState extends State<PhoneVerifyWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      onTap: () => _model.unfocusNode.canRequestFocus
+          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+          : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
@@ -191,27 +194,8 @@ class _PhoneVerifyWidgetState extends State<PhoneVerifyWidget> {
                       padding:
                           EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 44.0),
                       child: FFButtonWidget(
-                        onPressed: () async {
-                          GoRouter.of(context).prepareAuthEvent();
-                          final smsCodeVal = _model.pinCodeController!.text;
-                          if (smsCodeVal == null || smsCodeVal.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Enter SMS verification code.'),
-                              ),
-                            );
-                            return;
-                          }
-                          final phoneVerifiedUser =
-                              await authManager.verifySmsCode(
-                            context: context,
-                            smsCode: smsCodeVal,
-                          );
-                          if (phoneVerifiedUser == null) {
-                            return;
-                          }
-
-                          context.goNamedAuth('homePage', context.mounted);
+                        onPressed: () {
+                          print('Button pressed ...');
                         },
                         text: 'Confirm & Continue',
                         options: FFButtonOptions(

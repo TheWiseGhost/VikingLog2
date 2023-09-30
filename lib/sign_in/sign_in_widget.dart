@@ -1,4 +1,4 @@
-import '/auth/firebase_auth/auth_util.dart';
+import '/auth/supabase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -30,6 +30,7 @@ class _SignInWidgetState extends State<SignInWidget> {
 
     _model.emailAddressController ??= TextEditingController();
     _model.passwordController ??= TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -42,7 +43,9 @@ class _SignInWidgetState extends State<SignInWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      onTap: () => _model.unfocusNode.canRequestFocus
+          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+          : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
@@ -325,7 +328,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                         return;
                                       }
 
-                                      context.goNamedAuth(
+                                      context.pushNamedAuth(
                                           'homePage', context.mounted);
                                     },
                                     child: Container(
@@ -408,16 +411,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                                           .primaryText,
                                       size: 16.0,
                                     ),
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInWithGoogle(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.goNamedAuth(
-                                          'homePage', context.mounted);
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -436,16 +431,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                                           .primaryText,
                                       size: 16.0,
                                     ),
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInWithApple(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.goNamedAuth(
-                                          'homePage', context.mounted);
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -464,8 +451,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                                           .primaryText,
                                       size: 20.0,
                                     ),
-                                    onPressed: () async {
-                                      context.pushNamed('phoneSignIn');
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -540,16 +527,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   FFButtonWidget(
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInAnonymously(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.goNamedAuth(
-                                          'homePage', context.mounted);
+                                    onPressed: () {
+                                      print('Button-Login pressed ...');
                                     },
                                     text: 'Continue as Guest',
                                     options: FFButtonOptions(

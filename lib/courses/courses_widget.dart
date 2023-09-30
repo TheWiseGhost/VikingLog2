@@ -77,6 +77,8 @@ class _CoursesWidgetState extends State<CoursesWidget>
           !anim.applyInitialState),
       this,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -89,7 +91,9 @@ class _CoursesWidgetState extends State<CoursesWidget>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      onTap: () => _model.unfocusNode.canRequestFocus
+          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+          : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -583,6 +587,8 @@ class _CoursesWidgetState extends State<CoursesWidget>
                                                       width: 240.0,
                                                       lineHeight: 16.0,
                                                       animation: true,
+                                                      animateFromLastPercent:
+                                                          true,
                                                       progressColor:
                                                           FlutterFlowTheme.of(
                                                                   context)
@@ -887,6 +893,8 @@ class _CoursesWidgetState extends State<CoursesWidget>
                                                       width: 240.0,
                                                       lineHeight: 16.0,
                                                       animation: true,
+                                                      animateFromLastPercent:
+                                                          true,
                                                       progressColor:
                                                           FlutterFlowTheme.of(
                                                                   context)

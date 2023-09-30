@@ -1,4 +1,5 @@
-import '/auth/firebase_auth/auth_util.dart';
+import '/auth/supabase_auth/auth_util.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -30,6 +31,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
     _model.emailAddressController ??= TextEditingController();
     _model.passwordController ??= TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -42,7 +44,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      onTap: () => _model.unfocusNode.canRequestFocus
+          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+          : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
@@ -300,8 +304,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                         return;
                                       }
 
+                                      await UserTable().insert({
+                                        'email':
+                                            _model.emailAddressController.text,
+                                        'name': 'Test',
+                                        'title': 'Title',
+                                      });
+
                                       context.pushNamedAuth(
-                                          'createProfile', context.mounted);
+                                          'homePage', context.mounted);
                                     },
                                     child: Container(
                                       width: 150.0,
@@ -383,16 +394,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           .primaryText,
                                       size: 16.0,
                                     ),
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInWithGoogle(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.pushNamedAuth(
-                                          'createProfile', context.mounted);
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -411,16 +414,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           .primaryText,
                                       size: 16.0,
                                     ),
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInWithApple(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.pushNamedAuth(
-                                          'createProfile', context.mounted);
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -439,10 +434,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           .primaryText,
                                       size: 20.0,
                                     ),
-                                    onPressed: () async {
-                                      context.pushNamed('phoneSignIn');
-
-                                      context.pushNamed('createProfile');
+                                    onPressed: () {
+                                      print('IconButton pressed ...');
                                     },
                                   ),
                                 ),
@@ -507,16 +500,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   FFButtonWidget(
-                                    onPressed: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      final user = await authManager
-                                          .signInAnonymously(context);
-                                      if (user == null) {
-                                        return;
-                                      }
-
-                                      context.goNamedAuth(
-                                          'homePage', context.mounted);
+                                    onPressed: () {
+                                      print('Button-Login pressed ...');
                                     },
                                     text: 'Continue as Guest',
                                     options: FFButtonOptions(
